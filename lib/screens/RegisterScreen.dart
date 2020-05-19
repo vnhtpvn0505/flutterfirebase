@@ -40,13 +40,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return MaterialApp(
       theme: ThemeData(brightness: Brightness.light, accentColor: Colors.black),
       home: Scaffold(
+          appBar: AppBar(
+            leading: IconButton(
+              icon: const Icon(
+                Icons.arrow_back,
+                color: Colors.white,
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+            title: Text("Register"),
+          ),
           body: Padding(
-        padding: new EdgeInsets.fromLTRB(20.0, 40.0, 20.0, 0.0),
-        child: new Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[showForm()],
-        ),
-      )),
+            padding: new EdgeInsets.fromLTRB(20.0, 40.0, 20.0, 0.0),
+            child: new Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[showForm()],
+            ),
+          )),
     );
   }
 
@@ -57,11 +69,42 @@ class _RegisterScreenState extends State<RegisterScreen> {
         child: new ListView(
           shrinkWrap: true,
           children: <Widget>[
+            showInputFirstname(),
+            showInputLastname(),
             showInputUsername(),
             showInputPassword(),
             btnRegister()
           ],
         ),
+      ),
+    );
+  }
+
+  Widget showInputFirstname() {
+    return Container(
+      padding: new EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 10.0),
+      child: TextFormField(
+        onSaved: (value) => _firstname = value, // gán value to state
+        keyboardType: TextInputType.text,
+        decoration: const InputDecoration(
+          hintText: "First name ",
+        ),
+        validator: (value) =>
+            value.isEmpty ? 'Firstname can\'t be empty' : null,
+      ),
+    );
+  }
+
+  Widget showInputLastname() {
+    return Container(
+      padding: new EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 10.0),
+      child: TextFormField(
+        onSaved: (value) => _lastname = value, // gán value to state
+        keyboardType: TextInputType.text,
+        decoration: const InputDecoration(
+          hintText: "Last name ",
+        ),
+        validator: (value) => value.isEmpty ? 'Lastname can\'t be empty' : null,
       ),
     );
   }
