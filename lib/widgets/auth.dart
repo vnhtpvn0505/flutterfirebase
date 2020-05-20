@@ -11,6 +11,24 @@ class BaseAuth {
   }) async {
     var user = await _firebaseAuth.createUserWithEmailAndPassword(
         email: email, password: password);
-    print("USEr: $user.id");
+    print("USEr: $user");
+  }
+
+  @override
+  Future getCurrentUser() async {
+    FirebaseUser user = await _firebaseAuth.currentUser();
+    return user;
+  }
+
+  @override
+  Future signIn({String email, String password}) async {
+    try {
+      AuthResult result = await _firebaseAuth.signInWithEmailAndPassword(
+          email: email, password: password);
+      print("LOGIN: $result");
+      return result;
+    } catch (e) {
+      print("ERROR LOGIN $e");
+    }
   }
 }

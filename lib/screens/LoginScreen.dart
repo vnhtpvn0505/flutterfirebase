@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:hello_word/screens/HomeScreen.dart';
 import 'package:hello_word/screens/RegisterScreen.dart';
+import 'package:hello_word/widgets/auth.dart';
 
 //Statefull  requires at least two class:
 //StatefullWidget   create State class
@@ -13,6 +15,33 @@ class _LoginScreenState extends State<LoginScreen> {
   String _email, _password;
 
   @override
+  void initialState() {
+    super.initState();
+  }
+
+  bool _validate() {
+    final form = _key.currentState;
+    //form.save();
+    if (form.validate()) {
+      form.save();
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  void _signIn(BuildContext context) async {
+    if (_validate()) {
+      await BaseAuth().signIn(email: _email, password: _password).then(
+          (value) => {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => HomeScreen()))
+              });
+    }
+    print("LOGIN");
+  }
+
+  @override
   Widget build(BuildContext context) {
     return MaterialApp(
         theme:
@@ -22,13 +51,7 @@ class _LoginScreenState extends State<LoginScreen> {
             padding: new EdgeInsets.fromLTRB(20.0, 40.0, 20.0, 0.0),
             child: new Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                showLogo(),
-                showInputUsername(),
-                showInputPassword(),
-                btnLogin(),
-                btnRegister()
-              ],
+              children: <Widget>[showLogo(), showForm()],
             ),
           ),
         ));
@@ -43,11 +66,27 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  Widget showForm() {
+    return new Container(
+        child: new Form(
+      key: _key,
+      child: new ListView(
+        shrinkWrap: true,
+        children: <Widget>[
+          showInputUsername(),
+          showInputPassword(),
+          btnLogin(),
+          btnRegister()
+        ],
+      ),
+    ));
+  }
+
   Widget showInputUsername() {
     return Container(
       padding: new EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 10.0),
       child: TextFormField(
-        onSaved: (value) => _email = value, // gán value to state
+        onSaved: (value) => _email = value.trim(), // gán value to state
         keyboardType: TextInputType.emailAddress,
         decoration: const InputDecoration(
           hintText: "Email ",
@@ -61,8 +100,10 @@ class _LoginScreenState extends State<LoginScreen> {
     return Container(
       padding: new EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 10.0),
       child: TextFormField(
-        onSaved: (value) => _password = value, // gán value to state
+        obscureText: true,
+        onSaved: (value) => _password = value.trim(), // gán value to state
         decoration: const InputDecoration(hintText: "Password"),
+        validator: (value) => value.isEmpty ? "Password can\'t be empty" : null,
       ),
     );
   }
@@ -75,7 +116,7 @@ class _LoginScreenState extends State<LoginScreen> {
           height: MediaQuery.of(context).size.height * 0.05,
           child: RaisedButton(
             onPressed: () {
-              print("Login");
+              _signIn(context);
             },
             color: Colors.red,
             splashColor: Colors.grey,

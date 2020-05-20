@@ -1,5 +1,5 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:hello_word/screens/LoginScreen.dart';
 import 'package:hello_word/widgets/auth.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -9,7 +9,6 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final _key = GlobalKey<FormState>();
-  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   String _email, _password, _firstname, _lastname;
 
   @override
@@ -30,8 +29,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   void _signUp(BuildContext context) async {
     if (_validate()) {
-      await BaseAuth().signUp(email: _email, password: _password);
-      print('DONE');
+      await BaseAuth()
+          .signUp(email: _email, password: _password)
+          .then((value) => {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => LoginScreen()))
+              })
+          .catchError((err) => {print("ERROESINUP $err")});
+      print('DONE ');
     } else {}
   }
 
@@ -84,7 +89,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return Container(
       padding: new EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 10.0),
       child: TextFormField(
-        onSaved: (value) => _firstname = value, // gán value to state
+        onSaved: (value) => _firstname = value.trim(), // gán value to state
         keyboardType: TextInputType.text,
         decoration: const InputDecoration(
           hintText: "First name ",
@@ -99,7 +104,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return Container(
       padding: new EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 10.0),
       child: TextFormField(
-        onSaved: (value) => _lastname = value, // gán value to state
+        onSaved: (value) => _lastname = value.trim(), // gán value to state
         keyboardType: TextInputType.text,
         decoration: const InputDecoration(
           hintText: "Last name ",
@@ -113,7 +118,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return Container(
       padding: new EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 10.0),
       child: TextFormField(
-        onSaved: (value) => _email = value, // gán value to state
+        onSaved: (value) => _email = value.trim(), // gán value to state
         keyboardType: TextInputType.emailAddress,
         decoration: const InputDecoration(
           hintText: "Email ",
@@ -127,7 +132,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return Container(
       padding: new EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 10.0),
       child: TextFormField(
-        onSaved: (value) => _password = value, // gán value to state
+        onSaved: (value) => _password = value.trim(), // gán value to state
         obscureText: true,
         decoration: const InputDecoration(
           hintText: "Password ",
