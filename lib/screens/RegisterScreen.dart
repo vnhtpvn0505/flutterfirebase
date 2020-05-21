@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hello_word/screens/LoginScreen.dart';
 import 'package:hello_word/widgets/auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class RegisterScreen extends StatefulWidget {
   @override
@@ -10,7 +11,8 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen> {
   final _key = GlobalKey<FormState>();
   String _email, _password, _firstname, _lastname;
-
+  // gọi table gán vào element
+  final userRef = FirebaseDatabase.instance.reference().child('user');
   @override
   void initialState() {
     super.initState();
@@ -29,14 +31,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   void _signUp(BuildContext context) async {
     if (_validate()) {
-      await BaseAuth()
-          .signUp(email: _email, password: _password)
+      await BaseAuth().signUp(email: _email, password: _password);
+      print('DONE ');
+      //gán giá trị vào db
+      await userRef
+          .push()
+          .set({
+            "email": _email,
+            "firstname": _firstname,
+            "lastname": _lastname,
+            "password": _password
+          })
           .then((value) => {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => LoginScreen()))
               })
           .catchError((err) => {print("ERROESINUP $err")});
-      print('DONE ');
     } else {}
   }
 
