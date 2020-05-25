@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:hello_word/widgets/auth.dart';
+import 'screens/RootPage.dart';
 import 'screens/LoginScreen.dart';
 
 void main() {
@@ -27,7 +29,9 @@ class MyApp extends StatelessWidget {
         // closer together (more dense) than on mobile platforms.
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: LoginScreen(),
+      home: RootScreen(
+        auth: new BaseAuth(),
+      ),
     );
   }
 }

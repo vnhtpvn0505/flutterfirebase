@@ -1,24 +1,35 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:hello_word/widgets/auth.dart';
+import 'package:hello_word/widgets/user.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
+  HomeScreen({Key key, this.auth, this.userId, this.logoutCallback})
+      : super(key: key);
+  final BaseAuth auth;
+  final VoidCallback logoutCallback;
+  final String userId;
+
+  @override
+  State<StatefulWidget> createState() => new _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
   List<String> data = <String>[
     "Phuc Huynh",
     "Cao Le",
     "Tri Nguyen",
     "Tri Tran",
   ];
+  List<User> _userList = new List();
 
-  void getUser() {
-    var db = FirebaseDatabase.instance.reference().child("user");
-    db.once().then((DataSnapshot snapshot) {
-      var values = snapshot.value;
-
-      values.forEach((key, value) {
-        var ls = value.toString();
-        print("LS $ls");
-      });
-    });
+  void getUser() async {
+    var db = FirebaseDatabase.instance
+        .reference()
+        .child("user")
+        .child("NSJBylIJhF1kuoZkbRFi")
+        .onValue;
+    print("DBBBB$db");
   }
 
   @override

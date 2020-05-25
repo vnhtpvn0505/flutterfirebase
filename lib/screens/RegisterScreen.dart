@@ -68,12 +68,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
             title: Text("Register"),
           ),
           body: Padding(
-            padding: new EdgeInsets.fromLTRB(20.0, 40.0, 20.0, 0.0),
-            child: new Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[showForm()],
-            ),
-          )),
+              padding: new EdgeInsets.fromLTRB(20.0, 40.0, 20.0, 0.0),
+              child: SingleChildScrollView(
+                child: new Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[showForm()],
+                ),
+              ))),
     );
   }
 

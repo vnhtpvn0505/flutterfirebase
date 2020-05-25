@@ -25,8 +25,10 @@ class BaseAuth {
     try {
       AuthResult result = await _firebaseAuth.signInWithEmailAndPassword(
           email: email, password: password);
-      print("LOGIN: $result");
-      return result;
+
+      FirebaseUser user = result.user;
+      print("LOGINI: $user");
+      return user.uid;
     } catch (e) {
       print("ERROR LOGIN $e");
     }

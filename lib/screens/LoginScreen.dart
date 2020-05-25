@@ -6,18 +6,18 @@ import 'package:hello_word/widgets/auth.dart';
 //Statefull  requires at least two class:
 //StatefullWidget   create State class
 class LoginScreen extends StatefulWidget {
+  LoginScreen({this.auth, this.loginCallback});
+
+  final BaseAuth auth;
+  final VoidCallback loginCallback;
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends State<LoginScreen> {
   final _key = GlobalKey<FormState>();
-  String _email, _password;
-
-  @override
-  void initialState() {
-    super.initState();
-  }
+  String _email, _password, _errorMessage;
+  bool _isLoginForm, _isLoading;
 
   bool _validate() {
     final form = _key.currentState;
@@ -30,15 +30,56 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  @override
+  void initState() {
+    super.initState();
+    _errorMessage = "";
+    _isLoading = false;
+    _isLoginForm = false;
+  }
+
   void _signIn(BuildContext context) async {
+    setState(() {
+      _errorMessage = "";
+      _isLoading = true;
+    });
+    print("object");
     if (_validate()) {
-      await BaseAuth().signIn(email: _email, password: _password).then(
-          (value) => {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => HomeScreen()))
-              });
+      String userId = "";
+      try {
+        if (_isLoginForm) {
+          print('tryecatch');
+          userId = await widget.auth.signIn(email: _email, password: _password);
+          // await widget.auth
+          //     .signIn(email: _email, password: _password)
+          //     .then((value) => {
+          //           userId = value.uid,
+          //           print('Signed in: $userId'),
+          //           Navigator.push(context,
+          //               MaterialPageRoute(builder: (context) => HomeScreen()))
+          //         })
+          //     .catchError((err) {
+          //   {
+          //     print("LOGIN ERROR $err");
+          //   }
+          // });
+          print('Signed in: $userId');
+        }
+        setState(() {
+          _isLoading = false;
+        });
+        if (userId.length > 0 && userId != null && _isLoginForm) {
+          widget.loginCallback();
+        }
+      } catch (e) {
+        print('Error: $e');
+        setState(() {
+          _isLoading = false;
+          _errorMessage = e.message;
+          _key.currentState.reset();
+        });
+      }
     }
-    print("LOGIN");
   }
 
   @override
@@ -48,18 +89,47 @@ class _LoginScreenState extends State<LoginScreen> {
             ThemeData(brightness: Brightness.dark, accentColor: Colors.white),
         home: Scaffold(
           body: Padding(
-            padding: new EdgeInsets.fromLTRB(20.0, 40.0, 20.0, 0.0),
-            child: new Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[showLogo(), showForm()],
-            ),
-          ),
+              padding: new EdgeInsets.fromLTRB(20.0, 40.0, 20.0, 0.0),
+              child: SingleChildScrollView(
+                child: new Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[showLogo(), showForm(), isLoadingForm()],
+                ),
+              )),
         ));
+  }
+
+  Widget isLoadingForm() {
+    if (_isLoading == true) {
+      return Center(child: CircularProgressIndicator());
+    } else {
+      return Container(
+        height: 0,
+        width: 0,
+      );
+    }
+  }
+
+  Widget showErrorMessage() {
+    if (_errorMessage.length > 0 && _errorMessage != null) {
+      return new Text(
+        _errorMessage,
+        style: TextStyle(
+            fontSize: 13.0,
+            color: Colors.red,
+            height: 1.0,
+            fontWeight: FontWeight.w300),
+      );
+    } else {
+      return new Container(
+        height: 0.0,
+      );
+    }
   }
 
   Widget showLogo() {
     return Container(
-      padding: new EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 70.0),
+      padding: new EdgeInsets.fromLTRB(0.0, 40.0, 0.0, 70.0),
       child: Image(
         image: AssetImage("assets/logo.png"),
       ),
@@ -76,7 +146,8 @@ class _LoginScreenState extends State<LoginScreen> {
           showInputUsername(),
           showInputPassword(),
           btnLogin(),
-          btnRegister()
+          btnRegister(),
+          showErrorMessage()
         ],
       ),
     ));
