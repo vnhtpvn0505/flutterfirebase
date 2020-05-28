@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hello_word/screens/LoginScreen.dart';
 import 'package:hello_word/widgets/auth.dart';
@@ -10,7 +11,7 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen> {
   final _key = GlobalKey<FormState>();
   String _email, _password, _firstname, _lastname;
-
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   @override
   void initialState() {
     super.initState();
@@ -29,13 +30,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   void _signUp(BuildContext context) async {
     if (_validate()) {
-      await BaseAuth()
-          .signUp(email: _email, password: _password)
-          .then((value) => {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => LoginScreen()))
-              })
-          .catchError((err) => {print("ERROESINUP $err")});
+      try {
+        AuthResult result = await _firebaseAuth.createUserWithEmailAndPassword(
+            email: _email, password: _password);
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => LoginScreen()));
+      } catch (e) {
+        print('ERROR $e');
+      }
+
       print('DONE ');
     } else {}
   }

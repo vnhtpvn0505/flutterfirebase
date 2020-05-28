@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hello_word/screens/HomeScreen.dart';
 import 'package:hello_word/screens/RegisterScreen.dart';
@@ -11,6 +12,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final _key = GlobalKey<FormState>();
   String _email, _password;
 
@@ -32,11 +34,18 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _signIn(BuildContext context) async {
     if (_validate()) {
-      await BaseAuth().signIn(email: _email, password: _password).then(
-          (value) => {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => HomeScreen()))
-              });
+      try {
+        AuthResult result = await _firebaseAuth.signInWithEmailAndPassword(
+            email: _email, password: _password);
+
+        FirebaseUser user = result.user;
+        if (user.email == 'vnhtpvn0505@gmail.com') {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => HomeScreen()));
+        }
+      } catch (e) {
+        print("LOGINFAIL");
+      }
     }
     print("LOGIN");
   }
