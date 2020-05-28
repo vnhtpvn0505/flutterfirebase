@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hello_word/screens/HomeScreen.dart';
 import 'package:hello_word/screens/RegisterScreen.dart';
-import 'package:hello_word/widgets/auth.dart';
 
 //Statefull  requires at least two class:
 //StatefullWidget   create State class

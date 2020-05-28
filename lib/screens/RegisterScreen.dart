@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hello_word/screens/LoginScreen.dart';
-import 'package:hello_word/widgets/auth.dart';
 
 class RegisterScreen extends StatefulWidget {
   @override
