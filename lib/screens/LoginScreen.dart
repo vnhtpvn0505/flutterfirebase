@@ -49,20 +49,20 @@ class _LoginScreenState extends State<LoginScreen> {
       try {
         if (_isLoginForm) {
           print('tryecatch');
-          userId = await widget.auth.signIn(email: _email, password: _password);
-          // await widget.auth
-          //     .signIn(email: _email, password: _password)
-          //     .then((value) => {
-          //           userId = value.uid,
-          //           print('Signed in: $userId'),
-          //           Navigator.push(context,
-          //               MaterialPageRoute(builder: (context) => HomeScreen()))
-          //         })
-          //     .catchError((err) {
-          //   {
-          //     print("LOGIN ERROR $err");
-          //   }
-          // });
+          //userId = await widget.auth.signIn(email: _email, password: _password);
+          await widget.auth
+              .signIn(email: _email, password: _password)
+              .then((value) => {
+                    userId = value.uid,
+                    print('Signed in: $userId'),
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => HomeScreen()))
+                  })
+              .catchError((err) {
+            {
+              print("LOGIN ERROR $err");
+            }
+          });
           print('Signed in: $userId');
         }
         setState(() {
