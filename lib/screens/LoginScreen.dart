@@ -69,7 +69,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Container(
       padding: new EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 70.0),
       child: Image(
-        image: AssetImage("assets/logo.png"),
+        image: AssetImage("assets/blogo.png"),
       ),
     );
   }
